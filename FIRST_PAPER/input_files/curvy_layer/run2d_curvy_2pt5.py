@@ -19,21 +19,21 @@ def runWholeConvectionWorkflow(mesh_file, gr_string, nb_threads):
   output_dir = '.'
   input_dir = os.path.realpath('.')
   mesh_short_name = os.path.splitext(os.path.split(mesh_file)[1])[0]
-  running_tmp_dir = os.path.join(input_dir, 'Gr{gr}_mesh_{mesh}' .\
+  running_tmp_dir = os.path.join(input_dir, 'curvy_Gr{gr}_mesh_{mesh}' .\
     format(gr=gr_string, mesh=mesh_short_name))
   parameters = {
     'continuation_variable':'Lewis', # in ['Gruntfest', 'Lewis']
     'materials_affected':['redback_materialA'],#['*'],
-    'lambda_initial_1':8.0,
-    'lambda_initial_2':8.1,
-    'ds_initial':0.1,
+    'lambda_initial_1':1.0,
+    'lambda_initial_2':1.01,
+    'ds_initial':0.01,
     's_max':100,
     # Rescaling factor
-    'rescaling_factor':1e-08, # to multiply continuation parameter
+    'rescaling_factor':1e-07, # to multiply continuation parameter
     # Numerical parameters
     'exec_loc':'~/projects/redback/redback-opt',
     'nb_threads':4,
-    'input_file':os.path.join(input_dir, '2d_dip.i'), # '2D_Gr_9e-3_LE6e-08.i' transient file name
+    'input_file':os.path.join(input_dir, '2d_curvy.i'), # '2D_Gr_9e-3_LE6e-08.i' transient file name
     'starting_from_exodus':'will be set automatically', # exodus file with solution of transient simuation for Initial Guess 1
     'running_dir':os.path.realpath(running_tmp_dir),
     'result_curve_csv':os.path.join(os.path.realpath(running_tmp_dir), 'LSA_Gr{gr}_mesh_{mesh}.csv' .\
@@ -68,7 +68,7 @@ def runWholeConvectionWorkflow(mesh_file, gr_string, nb_threads):
   # make a copy (to keep) that transient.e file
   dot_e_file = sim_filename[0:-2] + '.e'
   dot_e_file2 = sim_filename[0:-2] + '_original.e'
-  shutil.copyfile(dot_e_file, dot_e_file2)
+#  shutil.copyfile(dot_e_file, dot_e_file2)
   # Continuation
   parameters['starting_from_exodus'] = os.path.join(parameters['running_dir'], ROOT_FILENAME_TRANSIENT+'.e')
   parameters['overwriting_params']['UserObjects/temp_ref_uo/mesh'] = ROOT_FILENAME_REF_SS+'.e'
@@ -78,18 +78,14 @@ def runWholeConvectionWorkflow(mesh_file, gr_string, nb_threads):
 
 if __name__ == "__main__":
   # User input
-  runWholeConvectionWorkflow('2d_fault.msh', '0', '4')
-  runWholeConvectionWorkflow('2d_fault.msh', '1e-05', '4')
-  runWholeConvectionWorkflow('2d_fault.msh', '1e-03', '4')
-  runWholeConvectionWorkflow('2d_fault.msh', '1e-02', '4')
-
+  runWholeConvectionWorkflow('2d_curvy_2pt5.msh', '0', '4')
 
   print 'Finished'
 
 
-'''This python file is supposed to vary the value of Gr in the fault (Material B), see lines 81-84.
-The input file runs a Lewis of 8e-08 on both Materials A+B, and CONVECTS, even when Gr=0.
-The mesh has dimensions [-1,2], and is named 2d_fault.msh.'''
+'''This python file was used to run the whole workflow for the geometry with the folded layer and perturbations of permeability (inverse Lewis) applied as a boundary condition.
+The input file runs a Lewis of 1e-07 on both Materials A+B, and CONVECTS. The critical Lewis is 1.09e-07.
+The mesh has dimensions [-1,2], and is named 2d_curvy.msh.'''
 
 
 

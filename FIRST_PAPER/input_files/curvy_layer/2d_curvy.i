@@ -4,11 +4,11 @@
 
 [Mesh]
   type = FileMesh
-  file = 2d_fault.msh
+  file = 2d_curvy.msh
   dim = 2
   block_name = 'bottom fault top'
   block_id = '0 1 2'
-  boundary_name = 'top bottom left right fault_upper fault_lower'
+  boundary_name = 'top right bottom left fault_upper fault_lower'
   boundary_id = '0 1 2 3 4 5'
 []
 
@@ -38,7 +38,7 @@
     Peclet_number = 1.0
     phi0 = 0.3
     pressurization_coefficient = 0.166923076923
-    ref_lewis_nb = 8.0e-08
+    ref_lewis_nb = 1.0e-07
     solid_compressibility = 0.001
     solid_thermal_expansion = 1e-05
     total_porosity = total_porosity
@@ -62,7 +62,7 @@
     Peclet_number = 1.0
     phi0 = 0.3
     pressurization_coefficient = 0.166923076923
-    ref_lewis_nb = 8.0e-08
+    ref_lewis_nb = 1.0e-07
     solid_compressibility = 0.001
     solid_thermal_expansion = 1e-05
     total_porosity = total_porosity
@@ -78,7 +78,7 @@
     # + amplitude*1/2*(cos(pi*(2*y-y_min-y_max)/(y_max-y_min))+1)*cos(pi*(2*x-x_min-x_max)/(x_max-x_min))
     type = ParsedFunction
     value = 'T_max + (y-y_min)*(T_min-T_max)/(y_max-y_min)+amplitude*1/2*(cos(pi*(2*y-y_min-y_max)/(y_max-y_min))+1)*cos(pi*(2*x-x_min-x_max)/(x_max-x_min))'
-    vals = '-1           0           0           2           0           1           0.2'
+    vals = '-1           0           0           2.5           0           1           0.2'
     vars = 'y_min y_max x_min x_max  T_min T_max amplitude'
   [../]
   [./init_gradient_P]
@@ -450,7 +450,7 @@
 []
 
 [ICs]
-  active = 'IC_temp IC_pressure'
+  active = 'IC_temp IC_pressure inv_Le_randomIC'
   [./IC_temp]
     function = init_gradient_T
     variable = temp
