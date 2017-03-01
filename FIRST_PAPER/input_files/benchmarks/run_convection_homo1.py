@@ -12,14 +12,14 @@ from ConvectionUtils import generateSteadyStateConvectionFile,\
 from Utils import runSimulation
 from RedbackContinuation import runContinuation
 
-def runWholeConvectionWorkflow(mesh_file, gr_string):
+def runWholeConvectionWorkflow(mesh_file, gr_string, nb_threads):
   ''' Run the whole workflow of continuation for convection
       for given mesh and gr
   '''
   output_dir = '.'
   input_dir = os.path.realpath('.')
   mesh_short_name = os.path.splitext(os.path.split(mesh_file)[1])[0]
-  running_tmp_dir = os.path.join(input_dir, 'Le1pt5e-08_{mesh}' .\
+  running_tmp_dir = os.path.join(input_dir, 'Benchmark_Case1_{mesh}' .\
     format(gr=gr_string, mesh=mesh_short_name))
   parameters = {
     'continuation_variable':'Lewis', # in ['Gruntfest', 'Lewis']
@@ -69,22 +69,24 @@ def runWholeConvectionWorkflow(mesh_file, gr_string):
   dot_e_file = sim_filename[0:-2] + '.e'
   dot_e_file2 = sim_filename[0:-2] + '_original.e'
   shutil.copyfile(dot_e_file, dot_e_file2)
-#  # Continuation
-#  parameters['starting_from_exodus'] = os.path.join(parameters['running_dir'], ROOT_FILENAME_TRANSIENT+'.e')
-#  parameters['overwriting_params']['UserObjects/temp_ref_uo/mesh'] = ROOT_FILENAME_REF_SS+'.e'
-#  results = runContinuation(parameters, logger)
-#  print 'Finished workflow for gr={gr}, mesh={mesh}'.\
-#    format(gr=gr_string, mesh=os.path.splitext(os.path.split(mesh_file)[1])[0])
+  # Continuation
+  parameters['starting_from_exodus'] = os.path.join(parameters['running_dir'], ROOT_FILENAME_TRANSIENT+'.e')
+  parameters['overwriting_params']['UserObjects/temp_ref_uo/mesh'] = ROOT_FILENAME_REF_SS+'.e'
+  results = runContinuation(parameters, logger)
+  print 'Finished workflow for gr={gr}, mesh={mesh}'.\
+    format(gr=gr_string, mesh=os.path.splitext(os.path.split(mesh_file)[1])[0])
 
 if __name__ == "__main__":
   # User input
-  mesh_file = '/home/moose/projects/redback_applications/redback_continuation/input_files/convection/FOR_PAPER/meshes/2d.msh'
-  gr_string = '0'
-  runWholeConvectionWorkflow(mesh_file, gr_string)
 
-#  mesh_file = '/home/moose/projects/convection2D_old/input_files/convection/meshes/2d_1200.msh'
-#  gr_string = '0'
-#  runWholeConvectionWorkflow(mesh_file, gr_string)
+  runWholeConvectionWorkflow('2d.msh', '0', '4')
 
 
   print 'Finished'
+
+
+'''This python file was used to run the whole workflow for the first case scenario with impermeable (Neumann) pressure and fixed (Dirichlet) temperature boundary conditions on the top and bottom of the model.
+The input file runs a Lewis of 3e-08 in Material A, and CONVECTS. The critical Lewis is 3.66e-08.
+The mesh has dimensions [-0.5,1], and is named 2d.msh.'''
+
+

@@ -52,7 +52,7 @@
     Peclet_number = 1.0
     phi0 = 0.3
     pressurization_coefficient = 0.166923076923
-    ref_lewis_nb = 1.5e-08
+    ref_lewis_nb = 3e-08
     solid_compressibility = 0.001
     solid_density = 2.5
     solid_thermal_expansion = 1e-05

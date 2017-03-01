@@ -12,7 +12,7 @@ from ConvectionUtils import generateSteadyStateConvectionFile,\
 from Utils import runSimulation
 from RedbackContinuation import runContinuation
 
-def runWholeConvectionWorkflow(mesh_file, gr_string):
+def runWholeConvectionWorkflow(mesh_file, gr_string, nb_threads):
   ''' Run the whole workflow of continuation for convection
       for given mesh and gr
   '''
@@ -36,7 +36,7 @@ def runWholeConvectionWorkflow(mesh_file, gr_string):
     'input_file':os.path.join(input_dir, 'transient_case2.i'), # '2D_Gr_9e-3_LE6e-08.i' transient file name
     'starting_from_exodus':'will be set automatically', # exodus file with solution of transient simuation for Initial Guess 1
     'running_dir':os.path.realpath(running_tmp_dir),
-    'result_curve_csv':os.path.join(os.path.realpath(running_tmp_dir), 'LSA_Benchmark2_Gr{gr}_mesh_{mesh}.csv' .\
+    'result_curve_csv':os.path.join(os.path.realpath(running_tmp_dir), 'LSA_Benchmark_Case2_mesh_{mesh}.csv' .\
       format(gr=gr_string, mesh=mesh_short_name)),
     'error_filename':'error_output.txt',
     'plot_s_curve':True,
@@ -78,13 +78,15 @@ def runWholeConvectionWorkflow(mesh_file, gr_string):
 
 if __name__ == "__main__":
   # User input
-  mesh_file = '/home/moose/projects/redback_applications/redback_continuation/input_files/convection/FOR_PAPER/meshes/2d.msh'
-  gr_string = '0'
-  runWholeConvectionWorkflow(mesh_file, gr_string)
 
-#  mesh_file = '/home/moose/projects/convection2D_old/input_files/convection/meshes/2d_1200.msh'
-#  gr_string = '0'
-#  runWholeConvectionWorkflow(mesh_file, gr_string)
+  runWholeConvectionWorkflow('2d.msh', '0', '4')
 
 
   print 'Finished'
+
+
+'''This python file was used to run the whole workflow for the first case scenario with impermeable (Neumann) pressure on the bottom, and fixed (Dirichlet) pressure on the top. The temperature boundary conditions are both fixed (Dirichlet) on the top and bottom of the model.
+The input file runs a Lewis of 4e-08 in Material A, and CONVECTS. The critical Lewis is 4.95e-08.
+The mesh has dimensions [-0.5,1], and is named 2d.msh.'''
+
+
