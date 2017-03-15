@@ -91,5 +91,3 @@ if __name__ == "__main__":
 
 
 '''This python file was used to run the whole workflow for the cases of a HORIZONTAL fault, with mesh '2d_horz_thin.msh', and dimensions being [1,-0.5]. The boundary conditions are identical to the second 'benchmark' case, with Neumann pressure on the bottom, Dirichlet pressure on top, and Dirichlet temperature on both top and bottom.'''
-
-
