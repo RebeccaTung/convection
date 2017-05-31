@@ -13,7 +13,7 @@
     type = DirichletBC
     variable = dummy
     boundary = 4
-    value = 5.43E+04
+    value = 5.43E+05 # k_fault = 1e-14, k_basement = 1e-20
   [../]
 []
 

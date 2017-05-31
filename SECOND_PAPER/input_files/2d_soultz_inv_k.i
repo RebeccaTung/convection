@@ -38,7 +38,6 @@
     Peclet_number = 1.0
     phi0 = 0.01
     pressurization_coefficient = 0.0306708878627
-    ref_lewis_nb = 1e-01
     solid_compressibility = 0.00982
     solid_thermal_expansion = 0.00018
     total_porosity = total_porosity
@@ -62,7 +61,6 @@
     Peclet_number = 1.0
     phi0 = 0.01
     pressurization_coefficient = 0.0306708878627
-    ref_lewis_nb = 1e-01
     solid_compressibility = 0.00982
     solid_thermal_expansion = 0.00018
     total_porosity = total_porosity
@@ -79,7 +77,7 @@
     # 
     # amplitude*1/2*(cos(pi*(2*y-y_min-y_max)/(y_max-y_min))+1)*cos(pi*(2*x-x_min-x_max+2)/(x_max-x_min+2)
     type = ParsedFunction
-    value = 'T_max + (y-y_min)*(T_min-T_max)/(y_max-y_min) + amplitude*1/2*(cos(pi*(2*y-y_min-y_max)/(y_max-y_min))+1)*cos(pi*(2*x-x_min-x_max)/(x_max-x_min))'
+    value = 'T_max + (y-y_min)*(T_min-T_max)/(y_max-y_min) + amplitude*1/2*(cos(pi*(2*y-y_min-y_max)/(y_max-y_min))+1)*cos(pi*(2*x-x_min-x_max+2)/(x_max-x_min+2))'
     vals = '-5           0           0           5.2           0           1           0.1'
     vars = 'y_min y_max x_min x_max  T_min T_max amplitude'
   [../]
@@ -126,7 +124,7 @@
     type = DirichletBC
     variable = pore_pressure
     boundary = top
-    value = 0.02
+    value = 2e-03
   [../]
 []
 
@@ -217,7 +215,7 @@
 []
 
 [Kernels]
-  active = 'pres_conv press_td temp_diff temp_dissip temp_td temp_conv press_diff'
+  active = 'pres_conv press_td temp_diff temp_td temp_conv press_diff'
   [./temp_td]
     type = TimeDerivative
     variable = temp
@@ -376,7 +374,6 @@
   [./fault_core_diff_auxker]
     type = SolutionAux
     variable = fault_core_diff_auxvar
-    block = fault
     solution = diff_fault_core_uo
   [../]
 []
@@ -384,7 +381,7 @@
 [UserObjects]
   [./diff_fault_core_uo]
     type = SolutionUserObject
-    timestep = 20
+    timestep = 30
     system_variables = dummy
     mesh = dummy_file.e
     execute_on = initial
@@ -450,7 +447,7 @@
 [Executioner]
   type = Transient
   num_steps = 1000
-  dt = 0.25
+  dt = 1e-03
   l_max_its = 200
   nl_max_its = 10
   solve_type = PJFNK
