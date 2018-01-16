@@ -1,1 +1,3 @@
 peacock_run_tmp*
+*.e
+*.msh
