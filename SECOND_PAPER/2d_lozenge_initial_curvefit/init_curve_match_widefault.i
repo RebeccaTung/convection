@@ -4,7 +4,7 @@
 
 [Mesh]
   type = FileMesh
-  file = soultz_lozenge_3layers33.msh
+  file = init_curve_match_widefault.msh
   dim = 2
   block_name = 'inside fault outside_top outside_bottom'
   block_id = '0 1 2 3'
@@ -34,7 +34,7 @@
     eta1 = 1e3
     fluid_compressibility = 0.01964
     fluid_thermal_expansion = 0.0126
-    gravity = '0 -0.997963340122 0'
+    gravity = '0 -1.037881874 0'
     Peclet_number = 1.0
     phi0 = 0.01
     pressurization_coefficient = 0.0306708878627
@@ -58,11 +58,11 @@
     eta1 = 1e3
     fluid_compressibility = 0.01964
     fluid_thermal_expansion = 0.0126
-    gravity = '0 -0.997963340122 0'
+    gravity = '0 -1.037881874 0'
     Peclet_number = 1.0
     phi0 = 0.01
     pressurization_coefficient = 0.0306708878627
-    ref_lewis_nb = 1e-05
+    ref_lewis_nb = 0.8e-05
     solid_compressibility = 0.00982
     solid_thermal_expansion = 0.00018
     total_porosity = total_porosity
@@ -82,7 +82,7 @@
     eta1 = 1e3
     fluid_compressibility = 0.01964
     fluid_thermal_expansion = 0.0126
-    gravity = '0 -0.997963340122 0'
+    gravity = '0 -1.037881874 0'
     Peclet_number = 1.0
     phi0 = 0.01
     pressurization_coefficient = 0.0306708878627
@@ -129,6 +129,10 @@
     value = 1.00+max_norm_gradT_conv/max_norm_gradT_ref
     vals = 'max_norm_gradT_ref max_norm_gradT_conv'
     vars = 'max_norm_gradT_ref max_norm_gradT_conv'
+  [../]
+  [./temp_IC]
+    type = SolutionFunction
+    solution = temp_IC_uo
   [../]
 []
 
@@ -232,6 +236,8 @@
   [./perm_auxvar]
     order = CONSTANT
     family = MONOMIAL
+  [../]
+  [./temp_IC_auxvar]
   [../]
 []
 
@@ -393,6 +399,21 @@
     function = 1.84e-20/Lewis_number
     args = 'Lewis_number perm_auxvar'
   [../]
+  [./temp_IC_ker]
+    type = SolutionAux
+    variable = temp_IC_auxvar
+    solution = temp_IC_uo
+  [../]
+[]
+
+[UserObjects]
+  [./temp_IC_uo]
+    type = SolutionUserObject
+    timestep = LATEST
+    system_variables = temp
+    mesh = GOOD_therm_diff_111.e
+    execute_on = initial
+  [../]
 []
 
 [Preconditioning]
@@ -460,30 +481,35 @@
   solve_type = PJFNK
   petsc_options_iname = '-ksp_type -pc_type -sub_pc_type -ksp_gmres_restart '
   petsc_options_value = 'gmres asm lu 201'
-  nl_abs_tol = 1e-9 # 1e-10 to begin with
+  nl_abs_tol = 5e-9 # 1e-10 to begin with
   nl_rel_tol = 1e-6 # 1e-10 to begin with
   line_search = basic
+  [./TimeStepper]
+    type = SolutionTimeAdaptiveDT
+    percent_change = 0.2
+    adapt_log = true
+    dt = 1e-02
+  [../]
 []
 
 [Outputs]
-  file_base = lozenge_3layers_Le5e-05
+  file_base = NEW_therm_diff_111
   print_linear_residuals = false
   csv = true
   [./console]
     type = Console
     perf_log = true
-    output_linear = true
   [../]
   [./curve_exo]
     output_material_properties = true
-    file_base = lozenge_3layers_Le5e-05
+    file_base = NEW_therm_diff_111
     type = Exodus
     elemental_as_nodal = true
   [../]
 []
 
 [ICs]
-  active = 'IC_temp IC_pressure'
+  active = 'IC_pressure IC_temp_NEW'
   [./IC_temp]
     function = init_gradient_T
     variable = temp
@@ -501,6 +527,11 @@
     standard_deviation = 0.5
     type = FunctionLogNormalDistributionIC
     mean = 2e+07
+  [../]
+  [./IC_temp_NEW]
+    function = temp_IC
+    variable = temp
+    type = FunctionIC
   [../]
 []
 
